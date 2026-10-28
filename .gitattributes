@@ -1,3 +1,4 @@
 *.Mod linguist-language=Oberon
 *.jpg binary
 *.ppm binary
+*.tgz binary
