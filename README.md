@@ -35,12 +35,23 @@ In a program:
     JPEG0.Encode(W, img, quality, res)  a baseline JFIF picture
     JPEG0.ReadInfo(R, info, res)        the frame header only
     JPEG0.NewImage(w, h)                an image to fill and encode
+    JPEG0.DecodeBytes(data, n, limit, img, res)      the picture in data[0..n-1], at most limit pixels
+    JPEG0.EncodeBytes(img, quality, max, data, n, res)  into data[0..n-1], at most max bytes
+    JPEG0.ReadInfoBytes(data, n, info, res)          the frame header of the picture in data
 
 Decode reads baseline and progressive JPEG pictures with Huffman coding and 8 bits a sample: grey,
 YCbCr, RGB, CMYK and YCCK, with every sampling factor that divides the largest one, with or without
 restart intervals. It refuses arithmetic coding, 12-bit samples, and lossless and hierarchical
 pictures. A picture that is cut short is decoded as far as its data goes and grey after that, as
 libjpeg does it.
+
+The entry points ending in Bytes work in memory, on the files of Files.NewMemory and Files.FromBytes,
+and write no file. DecodeBytes refuses a picture of more than limit pixels (1 to MaxPixels) with
+tooLarge before it takes memory for the pixels; EncodeBytes gives tooLarge, data NIL and n 0 when the
+picture needs more than max bytes, and on success only data[0..n-1] holds it. Decode and Encode also
+refuse a picture whose width and height do not fit MaxPixels, or whose pix is smaller than they say.
+These versions need a polpo whose Files has NewMemory and whose compilers take HUGEINT (after polpo
+1.4.0).
 
 The inverse DCT, the upsampling of the halved colours and the colour conversion compute as those of
 libjpeg (its integer DCT "islow" and its "fancy upsampling"), so a picture decodes to the pixels djpeg
@@ -66,6 +77,7 @@ Oberon), which read only baseline pictures, wrote none, and drew into Pictures a
     desktop/JPEG.Mod                                    package jpeg
     desktop/JPEGImages.Mod                              package images-jpeg
     test/JPEGTest.Mod, jpegsuite.list, jpegsuite.tgz
+    test/JPEGMemoryTest.Mod
     test/JPEGPicturesTest.Mod, test/JPEGImagesTest.Mod  (they need the desktop's display)
 
 ## Tests
@@ -74,6 +86,13 @@ Oberon), which read only baseline pictures, wrote none, and drew into Pictures a
                                   decode decoded and its pixels compared by their CRC-32 with the
                                   list, then encoded with the quality 75, decoded again and compared;
                                   each of the 6 others refused with the expected result
+
+    JPEGMemoryTest.Run            15 checks: a picture of 160 by 160 encoded into memory and
+                                  decoded again, the same bytes as through a rider; the pixel limit,
+                                  the limit of the output, and data cut short or too large refused
+    JPEGMemoryTest.Fixtures jpegsuite.list
+                                  255 checks: each picture of the list read with ReadInfoBytes and
+                                  DecodeBytes and through a rider, the same results and pixels
 
     JPEGPicturesTest.Run          4 checks: Pictures.Open of a baseline, a progressive and a grey
                                   picture, their colours near those of JPEG0 (averaged over blocks
