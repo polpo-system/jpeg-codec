@@ -12,7 +12,7 @@ MODULE JPEGTest;  (* loksh JPEGTest.Run jpegsuite.list: JPEG0 on the pictures of
   JPEGTest.Write names list writes the list for the pictures named in the file names (one a line)
   as JPEG0 decodes and encodes them now. *)
 
-IMPORT Files, Texts, out, Zlib, JPEG0;
+IMPORT Files, Texts, Out, Zlib, JPEG0;
 
 CONST Max = 128;
 
@@ -20,8 +20,8 @@ VAR checks, failed: LONGINT;
 
 PROCEDURE Fail(VAR name: ARRAY OF CHAR; what: ARRAY OF CHAR; x: LONGINT);
 BEGIN
-  INC(failed); out.String("FAIL "); out.String(name); out.String(": "); out.String(what); out.String(" ");
-  out.Int(x, 0); out.Ln
+  INC(failed); Out.String("FAIL "); Out.String(name); Out.String(": "); Out.String(what); Out.String(" ");
+  Out.Int(x, 0); Out.Ln
 END Fail;
 
 PROCEDURE Decode(VAR name: ARRAY OF CHAR; VAR img: JPEG0.Image; VAR res: LONGINT);
@@ -98,12 +98,12 @@ PROCEDURE Run*;
 VAR A: Texts.Reader; name: ARRAY Max OF CHAR; line: ARRAY 256 OF CHAR; f: Files.File; R: Files.Rider;
 BEGIN
   Texts.OpenArgs(A);
-  IF ~Texts.Arg(A, name) THEN out.String("usage: JPEGTest.Run jpegsuite.list"); out.Ln; RETURN END;
+  IF ~Texts.Arg(A, name) THEN Out.String("usage: JPEGTest.Run jpegsuite.list"); Out.Ln; RETURN END;
   f := Files.Old(name);
-  IF f = NIL THEN out.String("FAIL no "); out.String(name); out.Ln; RETURN END;
+  IF f = NIL THEN Out.String("FAIL no "); Out.String(name); Out.Ln; RETURN END;
   checks := 0; failed := 0; Files.Set(R, f, 0);
   WHILE Line(R, line) DO Case(line) END;
-  out.String("JPEGTest: "); out.Int(checks, 0); out.String(" checks, "); out.Int(failed, 0); out.String(" failed"); out.Ln
+  Out.String("JPEGTest: "); Out.Int(checks, 0); Out.String(" checks, "); Out.Int(failed, 0); Out.String(" failed"); Out.Ln
 END Run;
 
 PROCEDURE PutInt(VAR W: Files.Rider; x: LONGINT);
@@ -120,9 +120,9 @@ VAR A: Texts.Reader; names, list: ARRAY Max OF CHAR; name: ARRAY 256 OF CHAR; f,
   img: JPEG0.Image; res, i: LONGINT;
 BEGIN
   Texts.OpenArgs(A);
-  IF ~Texts.Arg(A, names) OR ~Texts.Arg(A, list) THEN out.String("usage: JPEGTest.Write names list"); out.Ln; RETURN END;
+  IF ~Texts.Arg(A, names) OR ~Texts.Arg(A, list) THEN Out.String("usage: JPEGTest.Write names list"); Out.Ln; RETURN END;
   f := Files.Old(names);
-  IF f = NIL THEN out.String(names); out.String(" not found"); out.Ln; RETURN END;
+  IF f = NIL THEN Out.String(names); Out.String(" not found"); Out.Ln; RETURN END;
   g := Files.New(list); Files.Set(W, g, 0); Files.Set(R, f, 0);
   WHILE Line(R, name) DO
     IF name # "" THEN

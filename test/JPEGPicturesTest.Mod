@@ -7,14 +7,14 @@ MODULE JPEGPicturesTest;  (* loksh JPEGPicturesTest.Run: JPEG pictures through P
   pictures: bbig.jpg (colour, baseline), prog.jpg (colour, progressive), bgrey.jpg (grey).
   JPEG.Store writes a picture JPEG0 reads again at the same size. *)
 
-IMPORT Files, Pictures, out, JPEG0, JPEG;
+IMPORT Files, Pictures, Out, JPEG0, JPEG;
 
 VAR checks, failed: LONGINT;
 
 PROCEDURE Check(what: ARRAY OF CHAR; ok: BOOLEAN);
 BEGIN
   INC(checks);
-  IF ~ok THEN INC(failed); out.String("FAIL "); out.String(what); out.Ln END
+  IF ~ok THEN INC(failed); Out.String("FAIL "); Out.String(what); Out.Ln END
 END Check;
 
 PROCEDURE Decode(name: ARRAY OF CHAR): JPEG0.Image;
@@ -61,7 +61,7 @@ END MeanDiff;
 PROCEDURE Case(name: ARRAY OF CHAR);
 VAR d: LONGINT;
 BEGIN
-  d := MeanDiff(name); out.String(name); out.String(": mean difference "); out.Int(d, 0); out.String(" / 10"); out.Ln;
+  d := MeanDiff(name); Out.String(name); Out.String(": mean difference "); Out.Int(d, 0); Out.String(" / 10"); Out.Ln;
   Check(name, (d >= 0) & (d < 200))
 END Case;
 
@@ -74,7 +74,7 @@ BEGIN
   f := Files.New("zq_store.jpg"); Files.Set(W, f, 0); JPEG.Store(P, W, res); Files.Register(f); Files.Close(f);
   img := Decode("zq_store.jpg");
   Check("JPEG.Store", (res = JPEG0.ok) & (img # NIL) & (img.width = P.width) & (img.height = P.height));
-  out.String("JPEGPicturesTest: "); out.Int(checks, 0); out.String(" checks, "); out.Int(failed, 0); out.String(" failed"); out.Ln
+  Out.String("JPEGPicturesTest: "); Out.Int(checks, 0); Out.String(" checks, "); Out.Int(failed, 0); Out.String(" failed"); Out.Ln
 END Run;
 
 END JPEGPicturesTest.

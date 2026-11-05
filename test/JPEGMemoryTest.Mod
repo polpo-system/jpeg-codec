@@ -5,14 +5,14 @@ MODULE JPEGMemoryTest;  (** loksh JPEGMemoryTest.Run, JPEGMemoryTest.Fixtures jp
   Fixtures: each picture of the list read with the byte-array entry points and with the rider ones, the
   same results and pixels. *)
 
-IMPORT Files, Texts, out, JPEG0;
+IMPORT Files, Texts, Out, JPEG0;
 
 VAR checks, failed: LONGINT; phase: ARRAY 256 OF CHAR;
 
 PROCEDURE Check(value: BOOLEAN);
 BEGIN
   INC(checks);
-  IF ~value THEN INC(failed); out.String("FAIL "); out.String(phase); out.String(", check "); out.Int(checks, 0); out.Ln END
+  IF ~value THEN INC(failed); Out.String("FAIL "); Out.String(phase); Out.String(", check "); Out.Int(checks, 0); Out.Ln END
 END Check;
 
 PROCEDURE Equal(VAR a, b: ARRAY OF CHAR; length: LONGINT): BOOLEAN;
@@ -101,7 +101,7 @@ END Fixture;
 PROCEDURE Run*;
 BEGIN
   checks := 0; failed := 0; JPEG;
-  out.String("JPEGMemoryTest: "); out.Int(checks, 0); out.String(" checks, "); out.Int(failed, 0); out.String(" failed"); out.Ln
+  Out.String("JPEGMemoryTest: "); Out.Int(checks, 0); Out.String(" checks, "); Out.Int(failed, 0); Out.String(" failed"); Out.Ln
 END Run;
 
 (** JPEGMemoryTest.Fixtures list: the byte-array entry points against the rider ones on every picture of list *)
@@ -109,16 +109,16 @@ PROCEDURE Fixtures*;
 VAR A: Texts.Reader; f: Files.File; r: Files.Rider; list: ARRAY 256 OF CHAR; line, name: ARRAY 256 OF CHAR; i: LONGINT;
 BEGIN
   checks := 0; failed := 0; Texts.OpenArgs(A);
-  IF ~Texts.Arg(A, list) THEN out.String("usage: JPEGMemoryTest.Fixtures jpegsuite.list"); out.Ln; RETURN END;
+  IF ~Texts.Arg(A, list) THEN Out.String("usage: JPEGMemoryTest.Fixtures jpegsuite.list"); Out.Ln; RETURN END;
   f := Files.Old(list);
-  IF f = NIL THEN out.String("FAIL no "); out.String(list); out.Ln; RETURN END;
+  IF f = NIL THEN Out.String("FAIL no "); Out.String(list); Out.Ln; RETURN END;
   Files.Set(r, f, 0);
   WHILE Line(r, line) DO
     i := 0; WHILE (line[i] > " ") & (i < LEN(name) - 1) DO name[i] := line[i]; INC(i) END;
     name[i] := 0X;
     IF (i > 0) & (name[0] # "#") THEN Fixture(name) END
   END;
-  out.String("JPEGMemoryTest fixtures: "); out.Int(checks, 0); out.String(" checks, "); out.Int(failed, 0); out.String(" failed"); out.Ln
+  Out.String("JPEGMemoryTest fixtures: "); Out.Int(checks, 0); Out.String(" checks, "); Out.Int(failed, 0); Out.String(" failed"); Out.Ln
 END Fixtures;
 
 END JPEGMemoryTest.

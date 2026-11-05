@@ -4,14 +4,14 @@ MODULE JPEGImagesTest;  (* loksh JPEGImagesTest.Run: JPEG pictures through Image
   (colour, progressive), bgrey.jpg (grey). Images.Load gives the pixels of JPEG0; Images.Store writes
   them with the quality 75, and JPEG0 reads back the pixels it gets from encoding them itself. *)
 
-IMPORT Files, Images, out, JPEG0, JPEGImages;
+IMPORT Files, Images, Out, JPEG0, JPEGImages;
 
 VAR checks, failed: LONGINT;
 
 PROCEDURE Check(what: ARRAY OF CHAR; ok: BOOLEAN);
 BEGIN
   INC(checks);
-  IF ~ok THEN INC(failed); out.String("FAIL "); out.String(what); out.Ln END
+  IF ~ok THEN INC(failed); Out.String("FAIL "); Out.String(what); Out.Ln END
 END Check;
 
 PROCEDURE Decode(name: ARRAY OF CHAR): JPEG0.Image;
@@ -79,7 +79,7 @@ PROCEDURE Run*;
 BEGIN
   checks := 0; failed := 0;
   ImagesCase("bbig.jpg"); ImagesCase("prog.jpg"); ImagesCase("bgrey.jpg");
-  out.String("JPEGImagesTest: "); out.Int(checks, 0); out.String(" checks, "); out.Int(failed, 0); out.String(" failed"); out.Ln
+  Out.String("JPEGImagesTest: "); Out.Int(checks, 0); Out.String(" checks, "); Out.Int(failed, 0); Out.String(" failed"); Out.Ln
 END Run;
 
 END JPEGImagesTest.
